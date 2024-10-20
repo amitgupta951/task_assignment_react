@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_HOMEPAGE_DATA } from './graphql/queries';
+import Banner from './components/Banner';
+import AboutSection from './components/AboutSection';
+import TopNav from './components/TopNav';
+import Footer from './components/Footer';
 
-function App() {
+const App = () => {
+  const { loading, error, data } = useQuery(GET_HOMEPAGE_DATA);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const homepageData = data.pages.nodes[0].homepage;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+            <div>
+      <TopNav/>
+      <div style={{ paddingRight: '16px' }}>
+      </div>
+      <Banner banners={homepageData.banners} />
+
+      {/* About Section */}
+      <AboutSection about={homepageData} />
+      <Footer />
+    </div>
+      
     </div>
   );
-}
+};
 
 export default App;
